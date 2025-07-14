@@ -1,0 +1,150 @@
+body {
+  background-color: black;
+  font-family: sans-serif;
+  color: white;
+  margin: 0;
+  padding: 0;
+}
+
+#form {
+  background-color: #151f30;
+  margin: 20px auto;
+  width: 300px;
+  border-radius: 10px;
+  padding: 5px 10px;
+  display: flex;
+}
+
+#query {
+  flex: 1;
+  padding: 7px;
+  border: none;
+  border-radius: 10px;
+  background: #222f4f;
+  color: white;
+  font-size: 16px;
+}
+
+#form button {
+  background-color: #222f4f;
+  border: none;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+#section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 10px;
+}
+
+.column {
+  width: 250px;
+  margin: 10px;
+}
+
+.card {
+  background-color: #151f30;
+  border-radius: 15px;
+  padding: 10px;
+  text-align: center;
+}
+
+.thumbnail {
+  width: 100%;
+  border-radius: 15px;
+}
+
+.card h3 {
+  margin: 10px 0 5px 0;
+}
+
+.card button {
+  background-color: #ff4c4c;
+  border: none;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.card button:hover {
+  background-color: #e04343;
+}
+
+.reviews {
+  text-align: left;
+  margin-top: 10px;
+  background: #222f4f;
+  padding: 10px;
+  border-radius: 10px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.reviews p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+form.review-form {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+form.review-form input,
+form.review-form button {
+  padding: 7px;
+  border-radius: 5px;
+  border: none;
+  font-size: 14px;
+}
+
+form.review-form input {
+  background: #222f4f;
+  color: white;
+}
+
+form.review-form button {
+  background: #ff4c4c;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+form.review-form button:hover {
+  background: #e04343;
+}
+
+#loadSavedBtn {
+  display: block;
+  margin: 15px auto;
+  padding: 10px 20px;
+  background: #222f4f;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#loadSavedBtn:hover {
+  background: #1a2440;
+}
+.main-title {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 36px;
+  color: #ff4c4c;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px #000000;
+}

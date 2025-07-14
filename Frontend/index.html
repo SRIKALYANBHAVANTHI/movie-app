@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Movie App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<h1 class="main-title">Bappam Tv</h1>
+
+
+  <form id="form">
+    <input type="text" id="query" placeholder="Search movies..." />
+    <button type="submit">Search</button>
+  </form>
+
+  <button id="loadSavedBtn">Load Saved Movies & Reviews</button>
+
+  <section id="section"></section>
+
+  <script>
+    const APILINK = 'https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=39c573bb144fab523c5c1b4ee247fbf8&page=1';
+    const IMG_PATH = 'https://image.tmdb.org/t/p/w1280';
+    const SEARCHAPI = 'https://api.themoviedb.org/3/search/movie?&api_key=39c573bb144fab523c5c1b4ee247fbf8&query=';
+
+    const main = document.getElementById("section");
+    const form = document.getElementById("form");
+    const search = document.getElementById("query");
+    const loadSavedBtn = document.getElementById("loadSavedBtn");
+
+    getMovies(APILINK);
+
+    function getMovies(url) {
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          main.innerHTML = "";
+
+          data.results.forEach(movie => {
+            const { title, poster_path, vote_average } = movie;
+
+            const column = document.createElement('div');
+            column.classList.add('column');
+
+            const card = document.createElement('div');
+            card.classList.add('card');
+
+            const image = document.createElement('img');
+            image.classList.add('thumbnail');
+            image.src = poster_path ? IMG_PATH + poster_path : 'https://via.placeholder.com/250x300?text=No+Image';
+
+            const movieTitle = document.createElement('h3');
+            movieTitle.innerText = title;
+
+            const saveButton = document.createElement('button');
+            saveButton.textContent = 'Save to Favorites';
+            saveButton.addEventListener('click', () => {
+              fetch('http://localhost:3000/movies', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  title,
+                  poster: image.src,
+                  rating: vote_average
+                })
+              })
+              .then(response => response.json())
+              .then(() => alert(`"${title}" saved successfully!`))
+              .catch(error => {
+                alert('Failed to save movie.');
+                console.error('Error:', error);
+              });
+            });
+
+            card.appendChild(image);
+            card.appendChild(movieTitle);
+            card.appendChild(saveButton);
+            column.appendChild(card);
+            main.appendChild(column);
+          });
+        })
+        .catch(err => {
+          console.error("Error fetching movies:", err);
+          main.innerHTML = `<p style="color: red;">Failed to load movies. Please try again later.</p>`;
+        });
+    }
+
+    function loadSavedMovies() {
+      fetch('http://localhost:3000/movies')
+        .then(res => res.json())
+        .then(movies => {
+          main.innerHTML = '';
+
+          movies.forEach(movie => {
+            const column = document.createElement('div');
+            column.classList.add('column');
+
+            const card = document.createElement('div');
+            card.classList.add('card');
+
+            const image = document.createElement('img');
+            image.classList.add('thumbnail');
+            image.src = movie.poster || 'https://via.placeholder.com/250x300?text=No+Image';
+
+            const title = document.createElement('h3');
+            title.innerText = movie.title;
+
+            card.appendChild(image);
+            card.appendChild(title);
+
+            const reviewsDiv = document.createElement('div');
+            reviewsDiv.classList.add('reviews');
+
+            if (movie.reviews && movie.reviews.length > 0) {
+              movie.reviews.forEach(review => {
+                const p = document.createElement('p');
+                p.innerHTML = `<strong>${review.username}</strong>: ${review.comment} (Rating: ${review.rating})`;
+                reviewsDiv.appendChild(p);
+              });
+            } else {
+              reviewsDiv.innerHTML = '<p>No reviews yet.</p>';
+            }
+            card.appendChild(reviewsDiv);
+
+            const reviewForm = document.createElement('form');
+            reviewForm.classList.add('review-form');
+            reviewForm.innerHTML = `
+              <input type="text" name="username" placeholder="Your name" required />
+              <input type="text" name="comment" placeholder="Your review" required />
+              <input type="number" name="rating" placeholder="Rating 1-10" min="1" max="10" required />
+              <button type="submit">Add Review</button>
+            `;
+
+            reviewForm.addEventListener('submit', e => {
+              e.preventDefault();
+              const formData = new FormData(reviewForm);
+              const reviewData = {
+                username: formData.get('username'),
+                comment: formData.get('comment'),
+                rating: Number(formData.get('rating')),
+              };
+
+              fetch(`http://localhost:3000/movies/${movie._id}/reviews`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(reviewData),
+              })
+                .then(res => res.json())
+                .then(updatedReviews => {
+                  reviewsDiv.innerHTML = '';
+                  updatedReviews.forEach(review => {
+                    const p = document.createElement('p');
+                    p.innerHTML = `<strong>${review.username}</strong>: ${review.comment} (Rating: ${review.rating})`;
+                    reviewsDiv.appendChild(p);
+                  });
+                  reviewForm.reset();
+                })
+                .catch(() => alert('Failed to add review.'));
+            });
+
+            card.appendChild(reviewForm);
+            column.appendChild(card);
+            main.appendChild(column);
+          });
+        })
+        .catch(() => {
+          main.innerHTML = '<p style="color:red;">Failed to load saved movies.</p>';
+        });
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const searchTerm = search.value.trim();
+
+      if (searchTerm) {
+        getMovies(SEARCHAPI + searchTerm);
+        search.value = "";
+      }
+    });
+
+    loadSavedBtn.addEventListener('click', loadSavedMovies);
+  </script>
+
+</body>
+</html>
