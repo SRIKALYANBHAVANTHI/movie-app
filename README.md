@@ -69,9 +69,10 @@ Serve the `Frontend/` directory with a local static web server and configure the
 ## Security and project notes
 
 - Keep MongoDB connection strings and other credentials in local environment variables; never commit `.env` files.
+- If a credential was committed in the past, rotate it. Removing a file from the latest commit does not erase it from Git history.
 - Use a restricted, appropriately configured TMDB API key and review the frontend configuration before publishing.
 - The current project uses local development URLs. Production deployment requires configuring the frontend and backend origins, CORS, and environment variables.
-- Automated test scripts and production deployment configuration are not yet documented in this repository.
+- The repository includes a GitHub Actions check that installs backend dependencies and validates backend JavaScript syntax. Automated application tests and production deployment configuration are not yet included.
 
 ---
 Maintained by [Srikalyan Bhavanthi](https://github.com/SRIKALYANBHAVANTHI).
