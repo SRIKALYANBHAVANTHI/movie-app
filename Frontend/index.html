@@ -115,7 +115,10 @@
             if (movie.reviews && movie.reviews.length > 0) {
               movie.reviews.forEach(review => {
                 const p = document.createElement('p');
-                p.innerHTML = `<strong>${review.username}</strong>: ${review.comment} (Rating: ${review.rating})`;
+                const author = document.createElement('strong');
+                author.textContent = review.username || 'Anonymous';
+                p.appendChild(author);
+                p.appendChild(document.createTextNode(`: ${review.comment || ''} (Rating: ${review.rating ?? 'N/A'})`));
                 reviewsDiv.appendChild(p);
               });
             } else {
@@ -151,7 +154,10 @@
                   reviewsDiv.innerHTML = '';
                   updatedReviews.forEach(review => {
                     const p = document.createElement('p');
-                    p.innerHTML = `<strong>${review.username}</strong>: ${review.comment} (Rating: ${review.rating})`;
+                    const author = document.createElement('strong');
+                    author.textContent = review.username || 'Anonymous';
+                    p.appendChild(author);
+                    p.appendChild(document.createTextNode(`: ${review.comment || ''} (Rating: ${review.rating ?? 'N/A'})`));
                     reviewsDiv.appendChild(p);
                   });
                   reviewForm.reset();
